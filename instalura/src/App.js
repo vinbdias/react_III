@@ -3,7 +3,9 @@ import Header from './componentes/Header';
 import Timeline from './componentes/Timeline';
 import FotoService from './services/FotoService';
 import UsuarioService from './services/UsuarioService';
-import TimelineStore from './stores/TimelineStore';
+import {createStore, applyMiddleware} from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import {timeline} from './reducers/timeline';
 
 export default class App extends Component {
 
@@ -11,17 +13,16 @@ export default class App extends Component {
 
         super(props);
 
+        this.store = createStore(timeline, applyMiddleware(thunkMiddleware));
+
         this.fotoService = new FotoService();
-        this.usuarioService = new UsuarioService();
-        this.timelineStore = new TimelineStore([]);
+        this.usuarioService = new UsuarioService();        
 
         let usuario = '';
         if(this.props.usuario !== undefined)
             usuario = this.props.usuario;
         else if(this.props.match.params.usuario !== undefined)
             usuario = this.props.match.params.usuario;
-
-
 
         this.state = { usuario: usuario };    
     }
@@ -32,13 +33,13 @@ export default class App extends Component {
            this.setState({ usuario: nextProps.match.params.usuario });
     }
 
-    render(data) {
+    render() {
 
         return (
             <div id="root">
                 <div data-reactroot="" className="main">
                     <Header fotoService={this.fotoService} />
-                    <Timeline usuario={this.state.usuario} usuarioService={this.usuarioService} timelineStore={this.timelineStore} />
+                    <Timeline usuario={this.state.usuario} usuarioService={this.usuarioService} store={this.store} />
                 </div>
             </div>
         );

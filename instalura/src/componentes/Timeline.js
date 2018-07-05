@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FotoItem from './Foto';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import TimelineApi from '../api/TimelineApi';
 
 export default class Timeline extends Component {
 
@@ -13,7 +14,7 @@ export default class Timeline extends Component {
 
     componentWillMount() {
 
-        this.props.timelineStore.subscribe(fotos => this.setState({fotos}));
+        this.props.store.subscribe(() => this.setState({ fotos: this.props.store.getState() }));
         
         this._carregarFotosDeAcordoComUrlEPropriedade();        
     }  
@@ -32,17 +33,17 @@ export default class Timeline extends Component {
 
     _carregarFotos(usuario) {
 
-        this.props.timelineStore.carregarFotos(usuario);
+        this.props.store.dispatch(TimelineApi.carregarFotos(usuario));                    
     }
 
     curtirFoto(fotoId) {
         
-        this.props.timelineStore.curtirFoto(fotoId);
+        this.props.store.dispatch(TimelineApi.curtirFoto(fotoId));
     }
 
     comentarFoto(fotoId, textoComentario) {
 
-        this.props.timelineStore.comentarFoto(fotoId, textoComentario);
+        this.props.store.dispatch(TimelineApi.comentarFoto(fotoId, textoComentario));
     }
 
     render() {            
