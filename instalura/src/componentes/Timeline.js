@@ -1,64 +1,67 @@
 import React, { Component } from 'react';
 import FotoItem from './Foto';
-import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 export default class Timeline extends Component {
 
-    constructor(props){
-      super(props);
-      this.state = {fotos:[]};
-      this.login = this.props.login;      
+    constructor(props) {
+
+        super(props);       
+
+        this.state = {fotos: []};        
     }
 
-    componentWillMount(){
-      this.props.store.subscribe(fotos => {
-        this.setState({fotos});
-      })
+    componentWillMount() {
+
+        this.props.timelineStore.subscribe(fotos => this.setState({fotos}));
+        
+        this._carregarFotosDeAcordoComUrlEPropriedade();        
+    }  
+
+    _carregarFotosDeAcordoComUrlEPropriedade() {
+
+        let usuario = (this.props.usuario !== undefined) ? this.props.usuario : '';
+        this._carregarFotos(usuario);        
+    }
+    
+    componentWillReceiveProps(nextProps) {
+
+        if(nextProps.usuario !== undefined)       
+            this._carregarFotos(nextProps.usuario);
     }
 
-    carregaFotos(){  
-      let urlPerfil;
+    _carregarFotos(usuario) {
 
-      if(this.login === undefined) {
-        urlPerfil = `http://localhost:8080/api/fotos?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
-      } else {
-        urlPerfil = `http://localhost:8080/api/public/fotos/${this.login}`;
-      }      
-      this.props.store.lista(urlPerfil);
+        this.props.timelineStore.carregarFotos(usuario);
     }
 
-    componentDidMount(){
-      this.carregaFotos();
+    curtirFoto(fotoId) {
+        
+        this.props.timelineStore.curtirFoto(fotoId);
     }
 
-    componentWillReceiveProps(nextProps){
-      if(nextProps.login !== undefined){
-        this.login = nextProps.login;
-        this.carregaFotos();
-      }
+    comentarFoto(fotoId, textoComentario) {
+
+        this.props.timelineStore.comentarFoto(fotoId, textoComentario);
     }
 
-    like(fotoId) {
-      this.props.store.like(fotoId);
-    }
+    render() {            
 
-    comenta(fotoId,textoComentario) {
-      this.props.store.comenta(fotoId,textoComentario);
-    }
+        return (                   
+                    <div className="fotos container">
+                        <TransitionGroup>
+                            {
+                                this.state.fotos.map(foto => {
 
-    render(){
-        return (
-        <div className="fotos container">
-        <ReactCSSTransitionGroup
-          transitionName="timeline"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}>
-            {
-              this.state.fotos.map(foto => <FotoItem key={foto.id} foto={foto} like={this.like.bind(this)} comenta={this.comenta.bind(this)}/>)
-            }               
-        </ReactCSSTransitionGroup>        
- 
-        </div>            
-        );
+                                    return (   
+                                        <CSSTransition key={foto.id} timeout={500} classNames="fade">                                 
+                                            <FotoItem foto={foto} curtirFoto={this.curtirFoto.bind(this)} comentarFoto={this.comentarFoto.bind(this)} fotoService={this.props.fotoService} curtida={(foto.likers.find(liker =>this.props.usuarioService.obterUsuarioLogado()) !== undefined) ? true : false} />
+                                        </CSSTransition>
+                                    );
+                                })
+                            }                
+                        </TransitionGroup>
+                    </div>                        
+        );        
     }
 }

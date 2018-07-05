@@ -14,7 +14,7 @@ export default class FotoService extends HttpService {
 
     obterFotos(usuario) {
         
-        let url = (usuario != '') ?
+        let url = (usuario !== '') ?
          `${this._publicApiUrl}/${usuario}` :
           `${this._privateApiUrl}?X-AUTH-TOKEN=${this._usuarioService.obterToken()}` ;
 

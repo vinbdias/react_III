@@ -1,14 +1,22 @@
-import { Component } from 'react';
-import {browserHistory} from  'react-router';
+import React, { Component } from 'react';
+import UsuarioService from '../services/UsuarioService';
+import { Redirect } from 'react-router-dom';
 
 export default class Logout extends Component {
 
-    componentWillMount(){
-        localStorage.removeItem('auth-token');
-        browserHistory.push('/');
+    constructor() {
+
+        super();
+        this._usuarioService = new UsuarioService();
     }
 
-    render(){
-        return null;
+    componentWillMount() {
+
+        this._usuarioService.removerToken();
+    }
+
+    render() {
+
+        return (<Redirect to="../login" />);
     }
 }
