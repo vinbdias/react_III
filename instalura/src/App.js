@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Header from './componentes/Header';
 import Timeline from './componentes/Timeline';
 import FotoService from './services/FotoService';
 import UsuarioService from './services/UsuarioService';
-import {createStore, applyMiddleware, combineReducers} from 'redux';
-import thunkMiddleware from 'redux-thunk';
-import TimelineReducer from './reducers/TimelineReducer';
-import HeaderReducer from './reducers/HeaderReducer';
 
 export default class App extends Component {
 
     constructor(props) {
                 
         super(props);
-
-        this.reducers = combineReducers({timeline: TimelineReducer.main, header: HeaderReducer.main});
-        this.store = createStore(this.reducers, applyMiddleware(thunkMiddleware));
 
         this.fotoService = new FotoService();
         this.usuarioService = new UsuarioService();        
@@ -40,10 +34,15 @@ export default class App extends Component {
         return (
             <div id="root">
                 <div data-reactroot="" className="main">
-                    <Header fotoService={this.fotoService} store={this.store} />
-                    <Timeline usuario={this.state.usuario} usuarioService={this.usuarioService} store={this.store} />
+                    <Header fotoService={this.fotoService} store={this.context.store} />
+                    <Timeline usuario={this.state.usuario} usuarioService={this.usuarioService} store={this.context.store} />
                 </div>
             </div>
         );
     }
 }
+
+App.contextTypes = {
+
+    store: PropTypes.object.isRequired
+};
