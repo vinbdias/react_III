@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "eslint": "^4.19.1",
+    "immutable": "^3.8.2",
     "pubsub-js": "^1.6.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",

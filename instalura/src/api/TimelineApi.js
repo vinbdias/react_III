@@ -1,14 +1,16 @@
 import FotoService from "../services/FotoService";
+import ActionCreator from "../actions/ActionCreator";
 
 export default class TimelineApi {
 
     static carregarFotos(usuario) {
 
         return dispatch => {
+
             new FotoService().obterFotos(usuario)
             .then(fotos => {
 
-                dispatch({type: 'LISTAGEM', fotos});
+                dispatch(ActionCreator.listagem(fotos));
 
                 return fotos;
             })
@@ -17,12 +19,13 @@ export default class TimelineApi {
     }
 
     static curtirFoto(fotoId) {
+
         return dispatch => {
 
             new FotoService().curtirFoto(fotoId)
             .then(usuarioCurtiu => {
 
-                dispatch({ type: 'CURTIDA', fotoId, usuarioCurtiu });
+                dispatch(ActionCreator.curtida(fotoId, usuarioCurtiu));
 
                 return usuarioCurtiu;
             })            
@@ -33,10 +36,30 @@ export default class TimelineApi {
     static comentarFoto(fotoId, textoComentario) {
 
         return dispatch => {
+
             new FotoService().comentarFoto(fotoId, textoComentario)
-            .then(novoComentario => dispatch({type: 'COMENTARIO', fotoId, novoComentario}))  
+            .then(novoComentario => dispatch(ActionCreator.comentario(fotoId, novoComentario)))  
             .catch(erro => console.log(erro)); 
         }            
+    }
+
+    static pesquisarFotos(termoPesquisa) {
+
+        return dispatch => {
+
+            new FotoService().pesquisarFotos(termoPesquisa)
+            .then(fotos => {
+
+                if(fotos.length === 0)
+                    dispatch(ActionCreator.notifica('Usuário não encontrado'));
+                else
+                    dispatch(ActionCreator.notifica(''));
+
+                dispatch(ActionCreator.pesquisa(fotos));
+                return fotos;
+            })
+            .catch(erro => console.log(erro)); 
+        }       
     }
 
 }

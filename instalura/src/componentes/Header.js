@@ -1,15 +1,26 @@
 import React, { Component } from 'react';
-import Pubsub from 'pubsub-js'; 
+import TimelineApi from '../api/TimelineApi';
 
 export default class Header extends Component {
+
+    constructor(props) {
+
+        super(props);
+        this.state = {mensagem: ''};
+    }
+
+    componentDidMount() {
+
+        this.props.store.subscribe(() => {
+
+            this.setState({mensagem: this.props.store.getState().header});
+        });
+    }
 
     pesquisar(evento) {
 
         evento.preventDefault();
-        this.props.fotoService
-            .pesquisarFotos(this._inputPesquisa.value)
-            .then(fotos => Pubsub.publish('timeline', fotos))
-            .catch(erro => console.log(erro));
+        this.props.store.dispatch(TimelineApi.pesquisarFotos(this._inputPesquisa.value));
     }
 
     render() {
@@ -28,6 +39,7 @@ export default class Header extends Component {
             <nav>
                 <ul className="header-nav">
                 <li className="header-nav-item">
+                    <span>{this.state.mensagem}</span>
                     <a href={null}>
                     ♡
                     </a>
