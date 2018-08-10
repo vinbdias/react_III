@@ -14,7 +14,7 @@ export default class FotoService extends HttpService {
 
     obterFotos(usuario) {
         
-        let url = (usuario !== '') ?
+        const url = (usuario !== '') ?
          `${this._publicApiUrl}/${usuario}` :
           `${this._privateApiUrl}?X-AUTH-TOKEN=${this._usuarioService.obterToken()}` ;
 
@@ -27,6 +27,7 @@ export default class FotoService extends HttpService {
     }
 
     curtirFoto(fotoId) {
+        
         return new Promise((resolve, reject) => {
 
             this.post(`${this._privateApiUrl}/${fotoId}/like?X-AUTH-TOKEN=${this._usuarioService.obterToken()}`, {})
@@ -52,7 +53,7 @@ export default class FotoService extends HttpService {
     pesquisarFotos(termoPesquisa) {
 
         return new Promise((resolve, reject) => {
-
+            
             this.get(`${this._publicApiUrl}/${termoPesquisa}`)
                 .then(resultadoPesquisa => resolve(resultadoPesquisa))
                 .catch(erro => reject('Não foi possível pesquisar.'));

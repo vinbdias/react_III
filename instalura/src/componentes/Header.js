@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import TimelineApi from '../api/TimelineApi';
+import TimelineDispatcher from '../dispatchers/TimelineDispatcher';
 
 export default class Header extends Component {
 
@@ -20,7 +20,7 @@ export default class Header extends Component {
     pesquisar(evento) {
 
         evento.preventDefault();
-        this.props.store.dispatch(TimelineApi.pesquisarFotos(this._inputPesquisa.value));
+        this.props.store.dispatch(TimelineDispatcher.pesquisarFotos(this._inputPesquisa.value));
     }
 
     render() {

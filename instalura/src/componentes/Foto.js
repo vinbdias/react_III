@@ -58,18 +58,17 @@ class FotoAtualizacoes extends Component {
     curtirFoto(evento) {
 
         evento.preventDefault();
-        this.setState({ curtida: !this.props.curtida });
-        this.props.curtirFoto(this.props.foto.id, this.props.fotoService);
+        this.props.curtirFoto(this.props.foto.id);
     }
 
     comentarFoto(evento) {
 
         evento.preventDefault();
-        this.props.comentarFoto(this.props.foto.id, this._inputComentario.value, this.props.fotoService);
+        this.props.comentarFoto(this.props.foto.id, this._inputComentario.value);
     }
 
     render() {
-
+        
         return (
         <section className="fotoAtualizacoes">
             <a onClick={this.curtirFoto.bind(this)} className={this.props.curtida ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Curtir</a>

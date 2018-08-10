@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import FotoItem from './Foto';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import TimelineApi from '../api/TimelineApi';
+import TimelineDispatcher from '../dispatchers/TimelineDispatcher';
+import {connect} from 'react-redux';
 
-export default class Timeline extends Component {
+class Timeline extends Component {
 
     constructor(props) {
 
@@ -27,36 +28,30 @@ export default class Timeline extends Component {
     
     componentWillReceiveProps(nextProps) {
 
-        if(nextProps.usuario !== undefined)       
-            this._carregarFotos(nextProps.usuario);
+        if(nextProps.usuario !== undefined && nextProps.usuario !== this.usuario)  {
+
+            this.usuario = nextProps.usuario;
+            this._carregarFotos(this.usuario);
+        }     
+            
     }
 
     _carregarFotos(usuario) {
 
-        this.props.store.dispatch(TimelineApi.carregarFotos(usuario));                    
-    }
-
-    curtirFoto(fotoId) {
-        
-        this.props.store.dispatch(TimelineApi.curtirFoto(fotoId));
-    }
-
-    comentarFoto(fotoId, textoComentario) {
-
-        this.props.store.dispatch(TimelineApi.comentarFoto(fotoId, textoComentario));
+        this.props.carregarFotos(usuario);                    
     }
 
     render() {            
-
+        
         return (                   
                     <div className="fotos container">
                         <TransitionGroup>
                             {
-                                this.state.fotos.map(foto => {
+                                this.props.fotos.map(foto => {
 
                                     return (   
                                         <CSSTransition key={foto.id} timeout={500} classNames="fade">                                 
-                                            <FotoItem foto={foto} curtirFoto={this.curtirFoto.bind(this)} comentarFoto={this.comentarFoto.bind(this)} fotoService={this.props.fotoService} curtida={(foto.likers.find(liker =>this.props.usuarioService.obterUsuarioLogado()) !== undefined) ? true : false} />
+                                            <FotoItem foto={foto} curtirFoto={this.props.curtirFoto} comentarFoto={this.props.comentarFoto} fotoService={this.props.fotoService} curtida={(foto.likers.find(liker => this.props.usuarioService.obterUsuarioLogado() == liker.login) !== undefined) ? true : false} />
                                         </CSSTransition>
                                     );
                                 })
@@ -66,3 +61,21 @@ export default class Timeline extends Component {
         );        
     }
 }
+
+const mapStateToProps = state => {
+
+    return  { fotos: state.timeline };
+};
+
+const mapDispatchToProps = dispatch => {
+
+    return {
+        curtirFoto: fotoId => dispatch(TimelineDispatcher.curtirFoto(fotoId)),
+        comentarFoto: (fotoId, textoComentario) => dispatch(TimelineDispatcher.comentarFoto(fotoId, textoComentario)),
+        carregarFotos: usuario => dispatch(TimelineDispatcher.carregarFotos(usuario))
+    };
+};
+
+const TimelineContainer = connect(mapStateToProps, mapDispatchToProps)(Timeline);
+
+export default TimelineContainer;

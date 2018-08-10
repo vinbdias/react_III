@@ -7,7 +7,8 @@ export default class TimelineReducer {
         switch(action.type) {
 
             case 'LISTAGEM':
-            
+            case 'PESQUISA':
+                
                 return new List(action.fotos);
 
             case 'COMENTARIO':               
@@ -26,9 +27,9 @@ export default class TimelineReducer {
                     const possivelCurtida = 
                     fotoEstadoAntigo
                     .likers
-                    .find(usuarioCurtiuAtual => 
-                        usuarioCurtiuAtual.login === usuarioCurtiu.login);                        
-                    let novasCurtidas;
+                    .find(usuarioCurtiuAtual => usuarioCurtiuAtual.login === usuarioCurtiu.login);                        
+
+                    let novasCurtidas = [{}];
 
                     if(possivelCurtida === undefined)
                         novasCurtidas = fotoEstadoAntigo.likers.concat(usuarioCurtiu);
@@ -37,10 +38,6 @@ export default class TimelineReducer {
                     
                         return {likers: novasCurtidas}
                 });   
-                
-            case 'PESQUISA':
-
-                return new List(action.fotos);
                 
             default:
                 return state;

@@ -10,10 +10,21 @@ export default class HttpService {
 
         if(!res.ok) 
             throw new Error(res.statusText);
-        else if([403, 404, 500].includes(res.status))
-            throw new Error(res.error);
 
-        return res;
+        switch(res.status) {
+
+            case 403:
+                throw new Error(`403, Proibido: ${res.error}` );
+
+            case 404:
+                throw new Error(`404, Não encontrado: ${res.error}`);
+        
+            case 500:
+                throw new Error(`500, Erro interno do servidor: ${res.error}`);                
+
+            default:
+                return res;
+        }        
     }
 
     get(url) {

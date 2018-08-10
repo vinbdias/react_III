@@ -1,7 +1,7 @@
 import FotoService from "../services/FotoService";
 import ActionCreator from "../actions/ActionCreator";
 
-export default class TimelineApi {
+export default class TimelineDispatcher {
 
     static carregarFotos(usuario) {
 
@@ -18,7 +18,7 @@ export default class TimelineApi {
         }
     }
 
-    static curtirFoto(fotoId) {
+    static curtirFoto(fotoId) {        
 
         return dispatch => {
 

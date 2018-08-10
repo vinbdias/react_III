@@ -17,7 +17,7 @@ export default class Login extends Component {
 
         evento.preventDefault();
 
-        let dadosAutenticacaoUsuario = {
+        const dadosAutenticacaoUsuario = {
 
             login: this._inputLogin.value,
             senha: this._inputSenha.value

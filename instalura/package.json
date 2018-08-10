@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "eslint": "^4.19.1",
+    "eslint-config-standard-jsx": "^5.0.0",
     "immutable": "^3.8.2",
     "prop-types": "^15.6.2",
     "pubsub-js": "^1.6.0",
